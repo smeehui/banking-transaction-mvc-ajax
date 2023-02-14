@@ -69,8 +69,7 @@ function init() {
                 $("#tbody").prepend(tr);
             },
             createTableRow: function (customer) {
-                return `
-                       <tr class="c${customer.id}">
+                return `<tr class="c${customer.id}">
                            <td class="queue"></td>
                            <td>${customer.name}</td>
                            <td>${customer.email}</td>
@@ -96,8 +95,7 @@ function init() {
                                    >Delete
                                </button>
                            </td>
-                       </tr>
-                       `;
+                       </tr>`;
             },
             addQueue: function () {
                 page.elements.tQueue.each(function (e) {
