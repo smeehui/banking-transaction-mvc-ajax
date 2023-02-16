@@ -1,0 +1,19 @@
+table tr::before {
+    position: absolute;
+    content: "";
+    background-color: yellow;
+    width: 10px;
+    top: 0;
+    bottom: 0;
+    left: -10px;
+    visibility: hidden;
+}
+table tr.active::before {
+    visibility: unset;
+}
+table tr.active {
+    background-color: #ececec;
+}
+tbody tr {
+    cursor: pointer;
+}

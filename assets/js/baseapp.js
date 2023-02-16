@@ -60,3 +60,61 @@ class Customer {
         this.deleted = deleted;
     }
 }
+
+class Deposit {
+    constructor(
+        customerId,
+        customerName,
+        transactionAmount,
+        date = new Date(),
+    ) {
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.transactionAmount = transactionAmount;
+        this.date = date;
+    }
+}
+
+class Transfer {
+    constructor(
+        senderID,
+        senderName,
+        recipientID,
+        recipientName,
+        transferAmount,
+        fee,
+        feeAmount,
+        transactionAmount,
+        date = new Date(),
+    ) {
+        this.senderID = senderID;
+        this.senderName = senderName;
+        this.recipientID = recipientID;
+        this.recipientName = recipientName;
+        this.transferAmount = transferAmount;
+        this.fee = fee;
+        this.feeAmount = feeAmount;
+        this.transactionAmount = transactionAmount;
+        this.date = date;
+    }
+}
+
+class LocationRegion {
+    constructor(
+        provinceId,
+        provinceName,
+        districtId,
+        districtName,
+        wardId,
+        wardName,
+        address,
+    ) {
+        this.provinceId = provinceId;
+        this.provinceName = provinceName;
+        this.districtId = districtId;
+        this.districtName = districtName;
+        this.wardId = wardId;
+        this.wardName = wardName;
+        this.address = address;
+    }
+}
