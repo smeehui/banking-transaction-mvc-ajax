@@ -37,7 +37,8 @@ function init() {
     page.elements.customerAddressCre = $("#inputAddress");
     page.elements.provinceCre = $("#inputProvince");
     page.elements.districtCre = $("#inputDistrict");
-    page.elements.wardCre = $("#inputWard");
+    page.elements.wardCre = $("#inputWard")
+    page.elements.customerCreErrorUl = $("#newCustomerModal .alert-danger")
 
     page.elements.customerFullNameEdit = $("#editName");
     page.elements.customerEmailEdit = $("#editEmail");
@@ -85,7 +86,7 @@ function init() {
         page.elements.allModalsHavingForm.on("hidden.bs.modal", () => {
             page.elements.allFormsInModal.each((i, el) => {
                 el.reset();
-                $(el).validate().resetForm();
+                $(".modal .alert-danger").empty().addClass("d-none").removeClass("show");
             });
         });
     };
@@ -158,7 +159,7 @@ function init() {
                 });
                 page.commands.addInputListenerToAddressSelection();
             })
-            .fail((jqXHR) => {
+            .fail(() => {
                 AppBase.SweetAlert.showErrorAlert("Load Provinces fail");
             });
     };
@@ -176,7 +177,7 @@ function init() {
                 });
                 page.elements.districtCre.empty().append(str);
             })
-            .fail((jqXHR) => {
+            .fail(() => {
                 AppBase.SweetAlert.showErrorAlert("Load Districts fail");
             });
     };
@@ -272,7 +273,7 @@ function init() {
         page.elements.customerTableTrs.removeClass("active");
         row.addClass("active");
         if (
-            row.data("customerid") == currentRow.data("customerid") &&
+            row.data("customerid") === currentRow.data("customerid") &&
             isActive
         ) {
             row.removeClass("active");
@@ -417,10 +418,15 @@ function init() {
                 page.commands.addActionBtnsClickEvent();
                 page.commands.resetCreateCustomerForm();
             })
-            .fail(() => {
-                AppBase.SweetAlert.showErrorAlert(
-                    "Some thing went wrong, please contact administrator!",
-                );
+            .fail((jqXHR) => {
+                let errors = jqXHR.responseJSON;
+
+                let str = '';
+                $.each(errors, (k, v) => {
+                    str += `<li>${v}</li>`;
+                })
+                page.elements.customerCreErrorUl.css("display","unset").addClass("show").removeClass("d-none");
+               page.elements.customerCreErrorUl.empty().append(str)
             });
     };
 

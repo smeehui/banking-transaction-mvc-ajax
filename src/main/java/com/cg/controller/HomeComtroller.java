@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeComtroller {
     @GetMapping
     public String directToCustomers(){
-        return "redirect:/customers";
+        return "redirect:/login";
     }
 }

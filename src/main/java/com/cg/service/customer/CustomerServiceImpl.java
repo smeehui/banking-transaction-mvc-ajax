@@ -10,6 +10,7 @@ import com.cg.repository.DepositRepository;
 import com.cg.repository.LocationReigionRepository;
 import com.cg.repository.TransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,6 +76,7 @@ public class CustomerServiceImpl implements ICustomerService {
         locationReigionRepository.save(locationRegion);
         customer.setLocationRegion(locationRegion);
         return customerRepository.save(customer);
+
     }
 
     @Override
