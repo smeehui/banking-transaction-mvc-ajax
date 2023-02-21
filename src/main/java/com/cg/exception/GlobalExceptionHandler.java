@@ -4,6 +4,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -74,4 +75,19 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return map;
     }
 
+    @ResponseBody
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String,String> userNotFoundHandler(UsernameNotFoundException exception) {
+        Map<String,String> map = new HashMap<>();
+        String msg = exception.getMessage();
+        if (msg.contains("phone")){
+            msg = "Phone number is existed";
+        }
+        if (msg.contains("email")){
+            msg = "Email address is existed";
+        }
+        map.put("errorMessage", msg);
+        return map;
+    }
 }

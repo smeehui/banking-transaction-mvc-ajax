@@ -48,7 +48,7 @@ public class UserService implements IUserService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> userOptional = userRepository.findByUsername(username);
         if (!userOptional.isPresent()) {
-            throw new UsernameNotFoundException(username);
+            throw new UsernameNotFoundException(username + "is not found");
         }
         return userOptional.get();
     }

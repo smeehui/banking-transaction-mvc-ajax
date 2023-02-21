@@ -20,7 +20,6 @@ function init() {
     let currentRow = $();
     let currentCustomer = new Customer();
     let locationRegion = new LocationRegion();
-    let token;
 
 
     page.commands.decodeCookie = () => {
@@ -348,6 +347,7 @@ function init() {
     page.commands.createTableRow = (customer, locationRegion) => {
         return `
                 <tr data-customerid = ${customer.id} class="tr_${customer.id} position-relative">
+                    <td></td>
                     <td class="queue">${customer.id}</td>
                     <td>${customer.fullName}</td>
                     <td>${customer.email}</td>
@@ -399,6 +399,7 @@ function init() {
     };
 
     page.commands.createNewCustomer = () => {
+        let locationRegion = new LocationRegion();
         let fullName = page.elements.customerFullNameCre.val();
         let email = page.elements.customerEmailCre.val();
         let phone = page.elements.customerPhoneCre.val();

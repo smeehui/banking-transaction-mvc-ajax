@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -85,8 +86,12 @@ public class SecurityConfig  {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .antMatchers("/assets/**").permitAll()
-                .antMatchers(HttpMethod.GET,"/","/index","/login")
+                .antMatchers(
+                        "/",
+                        "/assets/**",
+                        "/login",
+                        "/register",
+                        "/users/**")
                 .permitAll()
                 .antMatchers("/auth/**")
                 .permitAll()
@@ -105,12 +110,16 @@ public class SecurityConfig  {
 //                .failureUrl("/login?err=true")
 //                .usernameParameter("username").passwordParameter("password")
                 .and()
+                .logout()
+                .logoutUrl("/logout")
+                .clearAuthentication(true)
+                .deleteCookies("jwtToken")
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling().accessDeniedPage("/403");
         ;
 
         return http.build();

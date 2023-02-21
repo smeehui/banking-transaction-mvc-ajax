@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import java.util.Set;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class UserDTO extends BaseEntity implements Validator {
     private String username;
     private String email;
     private String password;
-    private RoleDTO role;
+    private Set<RoleDTO> roles;
 
     @Override
     public boolean supports(Class<?> clazz) {
