@@ -6,10 +6,10 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = TransferValidator.class)
+@Constraint(validatedBy = Transaction.class)
 @Target({ElementType.FIELD,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TransferConstraint {
+public @interface TransactionAmount {
     String message() default "Invalid transaction amount";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

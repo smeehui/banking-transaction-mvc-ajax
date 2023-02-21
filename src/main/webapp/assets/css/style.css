@@ -1,11 +1,11 @@
 table tr::before {
     position: absolute;
     content: "";
-    background-color: yellow;
+    background-color: #80ff00;
     width: 10px;
-    top: 0;
-    bottom: 0;
-    left: -10px;
+    top: 5px;
+    bottom: 5px;
+    left: 20px;
     visibility: hidden;
 }
 table tr.active::before {
@@ -17,3 +17,6 @@ table tr.active {
 tbody tr {
     cursor: pointer;
 }
+
+
+/*Login form*/

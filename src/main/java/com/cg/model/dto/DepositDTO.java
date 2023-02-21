@@ -3,13 +3,10 @@ package com.cg.model.dto;
 import com.cg.model.BaseEntity;
 import com.cg.model.Customer;
 import com.cg.model.Deposit;
+import com.cg.model.constraints.TransactionAmount;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @NoArgsConstructor
@@ -20,6 +17,8 @@ import java.math.BigDecimal;
 public class DepositDTO extends BaseEntity {
     private Long id;
     private CustomerDTO customer;
+
+    @TransactionAmount(minLength = 2,maxLength = 7)
     private BigDecimal transactionAmount;
 
     public Deposit toDeposit(){

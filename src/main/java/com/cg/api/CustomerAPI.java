@@ -4,6 +4,7 @@ import com.cg.exception.DataConflictException;
 import com.cg.exception.EmailExistedException;
 import com.cg.model.Customer;
 import com.cg.model.dto.CustomerDTO;
+import com.cg.repository.CustomerRepository;
 import com.cg.service.customer.ICustomerService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class CustomerAPI {
 
     @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    private CustomerRepository customerRepository;
+
     @GetMapping
     public ResponseEntity<List<CustomerDTO>> getAllCustomers(){
         List<CustomerDTO> customers = customerService.findAllCustomerDTOsByDeletedIsFalse();
@@ -47,12 +51,20 @@ public class CustomerAPI {
         customerDTO.setId(null);
         customerDTO.getLocationRegion().setId(null);
         Customer customer = customerDTO.toCustomer();
-       try{
-           customerService.save(customer);
-       }catch (DataIntegrityViolationException e){
-           throw new DataConflictException(e.getMessage());
-       }
 
-        return new ResponseEntity<>(customer, HttpStatus.CREATED);
+        String email = customerDTO.getEmail();
+        String phone = customerDTO.getPhone();
+
+        Optional<Customer> customerOptionalEmail = customerService.findByEmail(email);
+        if (customerOptionalEmail.isPresent()) throw new DataConflictException("Email has already been existed");
+       Optional<Customer> customerOptionalPhone = customerService.findByPhone(phone);
+       if (customerOptionalPhone.isPresent()) throw new DataConflictException("Phone has already been existed");
+
+
+
+       customerService.save(customer);
+
+
+       return new ResponseEntity<>(customer, HttpStatus.CREATED);
    }
 }

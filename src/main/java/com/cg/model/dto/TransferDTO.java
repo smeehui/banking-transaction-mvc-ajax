@@ -1,8 +1,7 @@
 package com.cg.model.dto;
 
 import com.cg.model.BaseEntity;
-import com.cg.model.Customer;
-import com.cg.model.constraints.TransferConstraint;
+import com.cg.model.constraints.TransactionAmount;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,12 +18,15 @@ import java.math.BigDecimal;
 @Setter
 @Accessors(chain = true)
 public class TransferDTO extends BaseEntity implements Validator {
+
     private Long id;
     private CustomerDTO sender;
     private CustomerDTO recipient;
-    @TransferConstraint(maxLength = 8, minLength = 2)
+
+    @TransactionAmount(maxLength = 8, minLength = 2)
     private BigDecimal transferAmount;
-    @TransferConstraint(maxLength = 2, minLength = 1)
+
+    @TransactionAmount(maxLength = 2, minLength = 1)
     private BigDecimal fees;
     private BigDecimal feesAmount;
     private BigDecimal transactionAmount;

@@ -26,4 +26,7 @@ public interface ICustomerService extends IGeneralService<Customer> {
     Deposit deposit(Deposit deposit);
 
     Transfer transfer(Transfer transfer);
+
+    Optional<Customer> findByEmail(String email);
+    Optional<Customer> findByPhone(String phone);
 }

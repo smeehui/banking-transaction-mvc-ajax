@@ -20,6 +20,16 @@ function init() {
     let currentRow = $();
     let currentCustomer = new Customer();
     let locationRegion = new LocationRegion();
+    let token;
+
+
+    page.commands.decodeCookie = () => {
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        token = "Bearer " + ca[0].replace("jwtToken=", "")
+
+    }
+
 
     page.elements.allFormsInModal = $(".modal form");
     page.elements.createCustomerForm = $("#newCustomerForm");
@@ -212,6 +222,9 @@ function init() {
     };
     page.loadData.getAllDeposits = () => {
         $.ajax({
+            headers:{
+                Authorization: token,
+            },
             type: "GET",
             url: page.urls.getAllDeposits,
         }).done((data) => {
@@ -281,7 +294,11 @@ function init() {
         currentRow = row;
     };
     page.loadData.findAllCustomer = () => {
+        console.log(token)
         $.ajax({
+            headers: {
+                Authorization: token,
+            },
             type: "GET",
             url: page.urls.getAllCustomers,
         }).done((data) => {
@@ -290,19 +307,25 @@ function init() {
     };
     page.loadData.getAllTransfer = () => {
         $.ajax({
+            headers: {
+                Authorization: token,
+            },
             type: "GET",
             url: page.urls.getAllTransfers,
         }).done((data) => {
             $.each(data, (i, item) => {
                 let sender = item.sender;
                 let recipient = item.recipient;
-                let tr = page.commands.createTransferRow(item,sender,recipient);
+                let tr = page.commands.createTransferRow(item, sender, recipient);
                 page.elements.transferHistoryTbBody.prepend(tr);
             });
         });
     };
     page.loadData.findAllCustomerNot = (id) => {
         return $.ajax({
+            headers: {
+                Authorization: token,
+            },
             type: "GET",
             url: page.urls.getAllCustomerNot + id,
         }).fail(() => {
@@ -312,6 +335,9 @@ function init() {
 
     page.loadData.findCustomerById = (id) => {
         return $.ajax({
+            headers:{
+                Authorization: token,
+            },
             type: "GET",
             url: page.urls.findCustomerById + `/${id}`,
         }).fail(() => {
@@ -334,7 +360,7 @@ function init() {
                 </tr>
                 `;
     };
-    page.commands.createTransferRow = (transfer,sender,recipient) => {
+    page.commands.createTransferRow = (transfer, sender, recipient) => {
         let date = new Date(transfer.createdAt);
         return ` <tr>
                     <td>${transfer.id}</td>
@@ -400,6 +426,7 @@ function init() {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
+                Authorization: token
             },
             type: "POST",
             url: page.urls.createCustomer,
@@ -425,8 +452,8 @@ function init() {
                 $.each(errors, (k, v) => {
                     str += `<li>${v}</li>`;
                 })
-                page.elements.customerCreErrorUl.css("display","unset").addClass("show").removeClass("d-none");
-               page.elements.customerCreErrorUl.empty().append(str)
+                page.elements.customerCreErrorUl.css("display", "unset").addClass("show").removeClass("d-none");
+                page.elements.customerCreErrorUl.empty().append(str)
             });
     };
 
@@ -461,6 +488,7 @@ function init() {
                     headers: {
                         accept: "application/json",
                         "content-type": "application/json",
+                        Authorization: token
                     },
                     type: "PATCH",
                     url: page.urls.updateCustomerById + `/${id}`,
@@ -495,10 +523,11 @@ function init() {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
+                Authorization: token
             },
             type: "PATCH",
             url: page.urls.deleteCustomerById + `/${id}`,
-            data: JSON.stringify({ deleted: 1 }),
+            data: JSON.stringify({deleted: 1}),
         })
             .done(() => {
                 $(`.tr_${id}`).remove();
@@ -575,28 +604,29 @@ function init() {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
+                Authorization: token
             },
             type: "POST",
             url: page.urls.createNewDeposit,
             data: JSON.stringify(deposit),
         }).then((deposit) => {
-                    currentCustomer=deposit.customer;
-                    AppBase.SweetAlert.showSuccessAlert(
-                        `Deposit to ${currentCustomer.fullName} account successfully!`,
-                    );
-                    let trStr = page.commands.createTableRow(
-                        currentCustomer,
-                        currentCustomer.locationRegion,
-                    );
-                    $(`.tr_${id}`).replaceWith(trStr);
-                    page.elements.depositModal.modal("toggle");
-                    page.commands.removeActionBtnsClickEvents();
-                    page.commands.addActionBtnsClickEvent();
-                    let depositRow = page.commands.createDepositRow(deposit,currentCustomer);
-                    page.elements.depositHistoryTbBody.prepend(depositRow);
+            currentCustomer = deposit.customer;
+            AppBase.SweetAlert.showSuccessAlert(
+                `Deposit to ${currentCustomer.fullName} account successfully!`,
+            );
+            let trStr = page.commands.createTableRow(
+                currentCustomer,
+                currentCustomer.locationRegion,
+            );
+            $(`.tr_${id}`).replaceWith(trStr);
+            page.elements.depositModal.modal("toggle");
+            page.commands.removeActionBtnsClickEvents();
+            page.commands.addActionBtnsClickEvent();
+            let depositRow = page.commands.createDepositRow(deposit, currentCustomer);
+            page.elements.depositHistoryTbBody.prepend(depositRow);
 
-                    page.elements.pageFooter.hide();
-                });
+            page.elements.pageFooter.hide();
+        });
     };
 
     page.commands.calculateTotalAmount = () => {
@@ -635,7 +665,7 @@ function init() {
             let feeAmount = (Number(transferAmount) * fees) / 100;
             let transactionAmount = transferAmount + feeAmount;
 
-            if (currentCustomer.id === recipient.id){
+            if (currentCustomer.id === recipient.id) {
                 AppBase.SweetAlert.showErrorAlert(
                     "Sender and recipient must be different",
                 );
@@ -644,7 +674,7 @@ function init() {
                 AppBase.SweetAlert.showErrorAlert(
                     "Sender balance is not enough",
                 );
-            } else{
+            } else {
                 let transfer = new Transfer();
                 transfer.sender = currentCustomer;
                 transfer.recipient = recipient;
@@ -663,6 +693,7 @@ function init() {
             headers: {
                 accept: "application/json",
                 "content-type": "application/json",
+                Authorization: token
             },
             type: "POST",
             url: page.urls.createNewTransfer,
@@ -689,7 +720,7 @@ function init() {
                 );
                 $(`.tr_${recipient.id}`).replaceWith(recipientRow);
 
-                let transferRow = page.commands.createTransferRow(transfer,sender,recipient);
+                let transferRow = page.commands.createTransferRow(transfer, sender, recipient);
                 page.elements.transferHistoryTbBody.prepend(transferRow);
 
 
@@ -752,7 +783,7 @@ function init() {
                 this.optional(element) || /[a-z]+@[a-z]+\.[a-z]{2,}/.test(value)
             );
         };
-        $.validator.setDefaults({ errorElement: "li" });
+        $.validator.setDefaults({errorElement: "li"});
 
         page.elements.createCustomerForm.validate({
             rules: customerValidationRules,
@@ -854,33 +885,33 @@ function init() {
         });
         page.elements.transferForm.validate({
             rules: {
-                tfAmount: {
-                    required: true,
-                    number: true,
-                    min: 10,
-                    max: 100000,
-                    maxlength: 7,
-                },
-                tfRecipientID: {
-                    required: true,
-                    number: true,
-                    maxlength: 5,
-                },
-            },
-
-            messages: {
-                tfAmount: {
-                    required: "Transfer amount is required",
-                    number: "Transaction amount is not valid",
-                    min: "Min transaction amount is ${0}$",
-                    max: "Max transaction amount is ${0}$",
-                    maxlength: "Max number of character is ${0}",
-                },
-                tfRecipientID: {
-                    required: "Recipient is required",
-                    number: "Recipient is not valid",
-                    maxlength: "Recipient is not valid",
-                },
+                //     tfAmount: {
+                //         required: true,
+                //         number: true,
+                //         min: 10,
+                //         max: 100000,
+                //         maxlength: 7,
+                //     },
+                //     tfRecipientID: {
+                //         required: true,
+                //         number: true,
+                //         maxlength: 5,
+                //     },
+                // },
+                //
+                // messages: {
+                //     tfAmount: {
+                //         required: "Transfer amount is required",
+                //         number: "Transaction amount is not valid",
+                //         min: "Min transaction amount is ${0}$",
+                //         max: "Max transaction amount is ${0}$",
+                //         maxlength: "Max number of character is ${0}",
+                //     },
+                //     tfRecipientID: {
+                //         required: "Recipient is required",
+                //         number: "Recipient is not valid",
+                //         maxlength: "Recipient is not valid",
+                //     },
             },
 
             errorLabelContainer: "#transferModal .alert-danger",
@@ -908,6 +939,8 @@ function init() {
     };
 
     return () => {
+        page.commands.decodeCookie();
+
         page.loadData.findAllCustomer();
 
         page.loadData.getAllTransfer();
@@ -921,8 +954,10 @@ function init() {
         page.commands.mainBtnClickEventHandler();
 
         page.commands.validationHandler();
+
     };
 }
+
 window.onload = () => {
     let App = init();
     App();

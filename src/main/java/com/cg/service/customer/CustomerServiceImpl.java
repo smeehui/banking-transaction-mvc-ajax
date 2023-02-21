@@ -70,6 +70,14 @@ public class CustomerServiceImpl implements ICustomerService {
         return customerRepository.findById(id);
     }
 
+    public Optional<Customer> findByEmail(String email){
+        return customerRepository.findByEmail(email);
+    };
+
+    public Optional<Customer> findByPhone (String phone){
+        return customerRepository.findByPhone(phone);
+    };
+
     @Override
     public Customer save(Customer customer) {
         LocationRegion locationRegion = customer.getLocationRegion();
@@ -130,4 +138,5 @@ public class CustomerServiceImpl implements ICustomerService {
     public void delete(Customer customer) {
 
     }
+
 }

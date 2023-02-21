@@ -7,8 +7,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +32,7 @@ public class DepositAPI {
     }
 
     @PostMapping
-    public ResponseEntity<Deposit> doCreateDeposit(@RequestBody DepositDTO depositDTO){
+    public ResponseEntity<Deposit> doCreateDeposit(@Valid @RequestBody DepositDTO depositDTO){
         Deposit deposit = depositDTO.toDeposit();
         depositService.save(deposit);
         return new ResponseEntity<>(deposit, HttpStatus.CREATED);
