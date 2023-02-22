@@ -1,0 +1,24 @@
+table tr::before {
+    position: absolute;
+    content: "";
+    background-color: rgba(72, 72, 72, 0.25);
+    width: 10px;
+    top: 8px;
+    bottom: 8px;
+    left: 5px;
+}
+table tr.active::before {
+    background-color: #80ff00;
+}
+table tr.active {
+    background-color: #ececec;
+}
+thead tr:first-child:before{
+    visibility: hidden;
+}
+tbody tr {
+    cursor: pointer;
+}
+
+
+/*Login form*/
