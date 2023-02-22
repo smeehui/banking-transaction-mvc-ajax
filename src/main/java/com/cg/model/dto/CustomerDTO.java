@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 
@@ -20,6 +22,7 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 public class CustomerDTO extends BaseEntity {
 
+    @NotNull(message = "Customer is empty")
     private Long id;
     private String fullName;
     private String email;

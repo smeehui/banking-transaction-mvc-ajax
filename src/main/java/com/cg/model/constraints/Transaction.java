@@ -4,7 +4,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.math.BigDecimal;
 
-public class Transaction implements ConstraintValidator<TransactionAmount, BigDecimal> {
+public class Transaction implements ConstraintValidator<TransactionAmount, String> {
     private int maxLength;
     private int minLength;
 
@@ -15,7 +15,7 @@ public class Transaction implements ConstraintValidator<TransactionAmount, BigDe
     }
 
     @Override
-    public boolean isValid(BigDecimal value, ConstraintValidatorContext context) {
+    public boolean isValid(String value, ConstraintValidatorContext context) {
         return value == null
                || value.toString().length() <= maxLength
                   && value.toString().length() >= minLength

@@ -30,11 +30,4 @@ public class Deposit extends BaseEntity {
     @Column(name = "transaction_amount", precision = 10, scale = 0, nullable = false)
     private BigDecimal transactionAmount;
 
-    public DepositDTO toDepositDTO() {
-    return new DepositDTO()
-            .setId(id)
-            .setCustomer(customer.toCustomerDTO())
-            .setTransactionAmount(transactionAmount);
-    }
-
 }

@@ -6,7 +6,10 @@ import com.cg.model.Deposit;
 import com.cg.model.constraints.TransactionAmount;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 
 @NoArgsConstructor
@@ -14,23 +17,32 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class DepositDTO extends BaseEntity {
+public class DepositDTO extends BaseEntity implements Validator {
     private Long id;
+
+    @Valid
     private CustomerDTO customer;
 
-    @TransactionAmount(minLength = 2,maxLength = 7)
-    private BigDecimal transactionAmount;
+//    @TransactionAmount(minLength = 2,maxLength = 7)
+    private String transactionAmount;
 
     public Deposit toDeposit(){
         return new Deposit()
                 .setId(id)
                 .setCustomer(customer.toCustomer())
-                .setTransactionAmount(transactionAmount);
+                .setTransactionAmount(BigDecimal.valueOf(Long.parseLong(transactionAmount)));
     }
 
-    public DepositDTO(Long id, Customer customer, BigDecimal transactionAmount) {
-        this.id = id;
-        this.customer = customer.toCustomerDTO();
-        this.transactionAmount = transactionAmount;
+    @Override
+    public boolean supports(Class<?> clazz) {
+        return DepositDTO.class.isAssignableFrom(clazz);
+    }
+
+    @Override
+    public void validate(Object target, Errors errors) {
+        DepositDTO depositDTO = (DepositDTO) target;
+        if (!depositDTO.getTransactionAmount().matches("[0-9]+")) {
+            errors.rejectValue("transactionAmount", "deposit.tAmount", "TransactionAmount is not valid");
+        }
     }
 }

@@ -13,23 +13,27 @@
     <script src="https://kit.fontawesome.com/8195191d3d.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class ="row">
-        <div class="col-md-6 mx-auto p-0">
+<div class="row" >
+    <div class="col-md-6 mx-auto p-0">
         <form>
             <div class="card">
                 <div class="login-box">
                     <div class="login-snip">
-                        <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Login</label>
-                        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign Up</label>
+                        <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1"
+                                                                                                 class="tab">Login</label>
+                        <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Sign
+                        Up</label>
                         <div class="login-space">
                             <div class="login">
                                 <div class="group">
                                     <label for="loginUName" class="label">Username</label>
-                                    <input id="loginUName" name="username" type="text" class="input"  placeholder="Enter your username">
+                                    <input id="loginUName" name="username" type="text" class="input"
+                                           placeholder="Enter your username">
                                 </div>
                                 <div class="group">
                                     <label for="loginUPassword" class="label">Password</label>
-                                    <input id="loginUPassword" name="password" type="password" class="input" data-type="password" placeholder="Enter your password">
+                                    <input id="loginUPassword" name="password" type="password" class="input"
+                                           data-type="password" placeholder="Enter your password">
                                 </div>
                                 <div class="group">
                                     <input id="check" type="checkbox" class="check" checked>
@@ -48,12 +52,13 @@
                                     <div class="col-lg-6">
                                         <div class="group">
                                             <label for="usernameRe" class="label">Username</label>
-                                            <input id="usernameRe" name="username" type="text" class="input"  placeholder="Enter username">
+                                            <input id="usernameRe" name="username" type="text" class="input"
+                                                   placeholder="Enter username">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="group">
-                                            <label for="roleRe" class="label"  >Select role</label>
+                                            <label for="roleRe" class="label">Select role</label>
                                             <select class="form-select" id="roleRe">
                                                 <option value="1">ADMIN</option>
                                                 <option value="2">USER</option>
@@ -63,7 +68,8 @@
                                 </div>
                                 <div class="group">
                                     <label for="passwordRe" class="label">Password</label>
-                                    <input id="passwordRe" type="password" name="password" class="input" data-type="password"
+                                    <input id="passwordRe" type="password" name="password" class="input"
+                                           data-type="password"
                                            placeholder="Create your password">
                                 </div>
                                 <div class="group">
@@ -73,7 +79,8 @@
                                 </div>
                                 <div class="group">
                                     <label for="emailRe" class="label">Email Address</label>
-                                    <input id="emailRe" name="email" type="text" class="input" placeholder="Enter your email address">
+                                    <input id="emailRe" name="email" type="text" class="input"
+                                           placeholder="Enter your email address">
                                 </div>
 
                                 <div class="group">
@@ -89,8 +96,11 @@
                 </div>
             </div>
         </form>
-        </div>
     </div>
+    <div class="toast-container" style="position: absolute; top: 0; right: 0;">
+
+    </div>
+</div>
 <script
         src="https://code.jquery.com/jquery-3.6.3.min.js"
         integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
@@ -117,45 +127,77 @@
 <script src="/assets/sweetalert/sweetalert2.all.min.js"></script>
 <script src="/assets/js/baseapp.js"></script>
 <script>
-    $("#signInBtn").on("click",()=>{
-        let loginUName = $("#loginUName").val();
-        let loginPassword = $("#loginUPassword").val();
-        let user = {username: loginUName,password:loginPassword}
-        $.ajax({
-            headers:{
-                accept:"application/json",
-                "content-type": "application/json"
-            }, type: "POST",
-            url: "http://localhost:8080/users/login",
-            data: JSON.stringify(user)
-        }).done((data) => {
-            window.location.href = "http://localhost:8080/index"
-        }).fail(() => {
-            AppBase.SweetAlert.showErrorAlert("Customer not found")
+    function login() {
+        $("#signInBtn").on("click", () => {
+            let loginUName = $("#loginUName").val();
+            let loginPassword = $("#loginUPassword").val();
+            let user = {username: loginUName, password: loginPassword}
+            $.ajax({
+                headers: {
+                    accept: "application/json",
+                    "content-type": "application/json"
+                }, type: "POST",
+                url: "http://localhost:8080/users/login",
+                data: JSON.stringify(user)
+            }).done((data) => {
+                window.location.href = "http://localhost:8080/index"
+            }).fail(() => {
+                AppBase.SweetAlert.showErrorAlert("Customer not found")
+            })
         })
-    })
+    }
 
-    $("#signUpBtn").on("click",()=>{
-        let username = $("#usernameRe").val();
-        let roles = Array.from(new Set([{id: $("#roleRe").val()}]))
-        let password = $("#passwordRe").val();
-        let email = $("#emailRe").val();
+    function register() {
+        $("#signUpBtn").on("click", () => {
+            let username = $("#usernameRe").val();
+            let roles = Array.from(new Set([{id: $("#roleRe").val()}]))
+            let password = $("#passwordRe").val();
+            let email = $("#emailRe").val();
 
-        let user = {username,roles,password,email};
+            let user = {username, roles, password, email};
 
-        console.log(user)
-        $.ajax({
-            headers: {
-                accept: "application/json",
-                "content-type": "application/json"
-            },
-            url: "http://localhost:8080/users/register",
-            type: "POST",
-            data: JSON.stringify(user)
-        }).done(()=>{
-            AppBase.SweetAlert.showSuccessAlert("New user is created successfully!")
+            $.ajax({
+                headers: {
+                    accept: "application/json",
+                    "content-type": "application/json"
+                },
+                url: "http://localhost:8080/users/register",
+                type: "POST",
+                data: JSON.stringify(user)
+            }).done(() => {
+                AppBase.SweetAlert.showSuccessAlert("New user is created successfully!")
+            }).fail((jqXHR) => {
+                let error = jqXHR.responseJSON;
+                console.log(error)
+                let toast = "";
+                $.each(error, (k, v) => {
+                    toast += `
+                            <div class="toast border border-danger" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <strong class="me-auto text-danger">${k}</strong>
+                                    <small class="text-muted">just now</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">
+                                   ${v}
+                                </div>
+                             </div>
+                            `
+                });
+                $(".toast-container").empty().append(toast);
+                $(".toast").toast({
+                    animation: true,
+                    autohide: true,
+                    delay: 3000
+                }).toast("show");
+            })
         })
-    })
+    }
+
+    window.onload = () => {
+        login();
+        register();
+    }
 </script>
 </body>
 </html>

@@ -35,11 +35,14 @@ public class DepositServiceImpl implements IDepositService {
 
     @Override
     public Deposit save(Deposit deposit) {
+
         deposit.setId(null);
         Customer customer = deposit.getCustomer();
-        customerRepository.incrementBalance(customer.getId(), deposit.getTransactionAmount());
+
         customer.setBalance(customer.getBalance().add(deposit.getTransactionAmount()));
         deposit.setCustomer(customer);
+        customerRepository.incrementBalance(customer.getId(), deposit.getTransactionAmount());
+
         return depositRepository.save(deposit);
     }
 
@@ -53,8 +56,8 @@ public class DepositServiceImpl implements IDepositService {
 
     }
 
-    @Override
-    public List<DepositDTO> getAllDepositsDTO() {
-        return depositRepository.getAllDepositsDTO();
-    }
+//    @Override
+//    public List<DepositDTO> getAllDepositsDTO() {
+//        return depositRepository.getAllDepositsDTO();
+//    }
 }

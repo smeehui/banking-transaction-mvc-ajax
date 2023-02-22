@@ -611,6 +611,7 @@ function init() {
             url: page.urls.createNewDeposit,
             data: JSON.stringify(deposit),
         }).then((deposit) => {
+            console.log(deposit)
             currentCustomer = deposit.customer;
             AppBase.SweetAlert.showSuccessAlert(
                 `Deposit to ${currentCustomer.fullName} account successfully!`,
@@ -620,9 +621,12 @@ function init() {
                 currentCustomer.locationRegion,
             );
             $(`.tr_${id}`).replaceWith(trStr);
+
             page.elements.depositModal.modal("toggle");
+
             page.commands.removeActionBtnsClickEvents();
             page.commands.addActionBtnsClickEvent();
+
             let depositRow = page.commands.createDepositRow(deposit, currentCustomer);
             page.elements.depositHistoryTbBody.prepend(depositRow);
 
@@ -663,7 +667,6 @@ function init() {
         page.loadData.findCustomerById(recipientID).then((recipient) => {
             let transferAmount = Number(page.elements.tfAmount.val());
             let fees = 10;
-            let feeAmount = (Number(transferAmount) * fees) / 100;
             let transactionAmount = transferAmount + feeAmount;
 
             if (currentCustomer.id === recipient.id) {

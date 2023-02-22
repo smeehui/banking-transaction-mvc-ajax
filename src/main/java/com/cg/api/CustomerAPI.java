@@ -6,6 +6,7 @@ import com.cg.model.Customer;
 import com.cg.model.dto.CustomerDTO;
 import com.cg.repository.CustomerRepository;
 import com.cg.service.customer.ICustomerService;
+import com.cg.util.AppUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,8 +27,13 @@ public class CustomerAPI {
 
     @Autowired
     ModelMapper modelMapper;
+
+
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private AppUtil appUtil;
 
     @GetMapping
     public ResponseEntity<List<CustomerDTO>> getAllCustomers(){

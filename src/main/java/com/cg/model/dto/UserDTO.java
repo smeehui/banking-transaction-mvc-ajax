@@ -9,6 +9,9 @@ import lombok.Setter;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 
@@ -18,9 +21,17 @@ import java.util.Set;
 @Setter
 public class UserDTO extends BaseEntity implements Validator {
     private Long id;
+
+    @NotEmpty(message = "Username is required")
     private String username;
+
+    @NotEmpty(message = "Email is required")
     private String email;
+
+    @NotEmpty(message = "Password is required")
     private String password;
+
+    @Valid
     private Set<RoleDTO> roles;
 
     @Override
@@ -30,6 +41,25 @@ public class UserDTO extends BaseEntity implements Validator {
 
     @Override
     public void validate(Object target, Errors errors) {
+        UserDTO userDTO = (UserDTO) target;
+
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
+
+        int min = 5;
+        int max = 10;
+        if (username.length() < min || username.length() > max) {
+            errors.rejectValue("username","username.length","Username's characters must be between 5 and 10");
+        }
+        else {
+            if (!username.matches("[a-z]+")) {
+                errors.rejectValue("username","username.format","Username must be text only");
+            }
+        }
+
+        if (!password.matches("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$")) {
+            errors.rejectValue("password","password.format","Password must contain minimum of eight characters, at least one letter and one number:");
+        }
 
     }
 }

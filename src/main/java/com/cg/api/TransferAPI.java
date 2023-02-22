@@ -2,12 +2,16 @@ package com.cg.api;
 
 import com.cg.exception.TransactionAmountException;
 import com.cg.model.Transfer;
+import com.cg.model.dto.CustomerDTO;
 import com.cg.model.dto.TransferDTO;
 import com.cg.service.transfer.ITransferService;
+import com.cg.util.AppUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +24,10 @@ public class TransferAPI {
     ITransferService transferService;
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    AppUtil appUtil;
+
     @GetMapping
     public ResponseEntity<List<TransferDTO>> getTransfers(){
 //        List<DepositDTO> depositDTOS = depositService.getAllDepositsDTO();
@@ -29,13 +37,23 @@ public class TransferAPI {
     }
 
     @PostMapping
-    public ResponseEntity<Transfer> doTransfer(@RequestBody TransferDTO transferDTO){
+    public ResponseEntity<?> doTransfer(@Validated @RequestBody TransferDTO transferDTO, BindingResult bindingResult){
+        new TransferDTO().validate(transferDTO,bindingResult);
+
+        CustomerDTO sender = transferDTO.getSender();
+        CustomerDTO recipient = transferDTO.getRecipient();
+
+
+
+
+        if (bindingResult.hasErrors()) {
+            return appUtil.mapErrorToResponse(bindingResult);
+        }
+
+
         Transfer transfer = modelMapper.map(transferDTO, Transfer.class);
-//     try {
-//
-//     }catch (RuntimeException e) {
-//         throw new TransactionAmountException();
-//     }
+
+
         transferService.save(transfer);
         return new ResponseEntity<>(transfer, HttpStatus.CREATED);
     }

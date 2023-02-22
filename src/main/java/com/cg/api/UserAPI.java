@@ -7,6 +7,7 @@ import com.cg.model.dto.UserDTO;
 import com.cg.model.jwt.JwtResponse;
 import com.cg.service.jwt.JwtService;
 import com.cg.service.user.IUserService;
+import com.cg.util.AppUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +44,9 @@ public class UserAPI {
     @Autowired
     ModelMapper modelMapper;
 
+    @Autowired
+    AppUtil appUtil;
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserDTO user) {
         String username = user.getUsername();
@@ -64,7 +70,13 @@ public class UserAPI {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> doCreate(@RequestBody UserDTO userDTO){
+    public ResponseEntity<?> doCreate(@Validated @RequestBody UserDTO userDTO, BindingResult bindingResult){
+
+        new UserDTO().validate(userDTO, bindingResult);
+        if (bindingResult.hasErrors()){
+            return appUtil.mapErrorToResponse(bindingResult);
+        }
+
             Set<RoleDTO> roleDTOs = userDTO.getRoles();
             Set<Role> roles = roleDTOs.stream().map(roleDTO -> modelMapper.map(roleDTO, Role.class)).collect(Collectors.toSet());
             User user = modelMapper.map(userDTO, User.class);

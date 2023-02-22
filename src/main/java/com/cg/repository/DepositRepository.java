@@ -12,10 +12,10 @@ import java.util.List;
 @Repository
 public interface DepositRepository extends JpaRepository<Deposit, Long> {
 
-    @Query("SELECT NEW com.cg.model.dto.DepositDTO(" +
-           "d.id," +
-           "d.customer," +
-           "d.transactionAmount" +
-           ") FROM Deposit AS d")
-    List<DepositDTO> getAllDepositsDTO();
+//    @Query("SELECT NEW com.cg.model.dto.DepositDTO(" +
+//           "d.id," +
+//           "d.customer," +
+//           "d.transactionAmount" +
+//           ") FROM Deposit AS d")
+//    List<DepositDTO> getAllDepositsDTO();
 }

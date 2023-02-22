@@ -23,13 +23,9 @@ public class TransferDTO extends BaseEntity implements Validator {
     private CustomerDTO sender;
     private CustomerDTO recipient;
 
-    @TransactionAmount(maxLength = 8, minLength = 2)
-    private BigDecimal transferAmount;
+    private String transferAmount;
 
-    @TransactionAmount(maxLength = 2, minLength = 1)
-    private BigDecimal fees;
-    private BigDecimal feesAmount;
-    private BigDecimal transactionAmount;
+    private String fees;
 
 
     @Override
@@ -41,15 +37,41 @@ public class TransferDTO extends BaseEntity implements Validator {
     public void validate(Object target, Errors errors) {
         TransferDTO transferDTO = (TransferDTO) target;
 
-        BigDecimal transferAmount = transferDTO.getTransferAmount();
-        BigDecimal minValue = BigDecimal.valueOf(10L);
-        BigDecimal maxValue = BigDecimal.valueOf(1000000L);
-        if (transferAmount.compareTo(minValue) < 0) {
-            errors.rejectValue("transferAmount", "transferAmount.min");
+        String transferAmountStr = transferDTO.getTransferAmount();
+        if (!transferAmountStr.matches("[0-9]+")) {
+            errors.rejectValue("transferAmount", "transferAmount.format","Transfer amount is not valid");
+        }
+        else if (transferAmount.length() < 2 || transferAmount.length() > 9) {
+            errors.rejectValue("transferAmount", "transferAmount.charater","Transfer amount character must be between 2 to 8");
+        }
+        else {
+            BigDecimal transferAmount = BigDecimal.valueOf(Long.parseLong(transferAmountStr));
+            BigDecimal minValue = BigDecimal.valueOf(10L);
+            BigDecimal maxValue = BigDecimal.valueOf(1000000L);
+
+            float fees = Float.parseFloat(transferDTO.getFees()) / 100;
+            BigDecimal transferFees = transferAmount.multiply(BigDecimal.valueOf(fees));
+            BigDecimal transactionAmount = transferAmount.add(transferFees);
+
+            if (transferAmount.compareTo(minValue) < 0) {
+                errors.rejectValue("transferAmount", "transferAmount.min");
+            }
+
+            if (transferAmount.compareTo(maxValue) > 0) {
+                errors.rejectValue("transferAmount", "transferAmount.max");
+            }
+
+            if (sender.getBalance().compareTo(transactionAmount) < 0) {
+                errors.rejectValue("senderBalance", "balance.low", "Sender balance is not enough");
+            }
+
         }
 
-        if (transferAmount.compareTo(maxValue) > 0) {
-            errors.rejectValue("transferAmount", "transferAmount.max");
+        CustomerDTO sender = transferDTO.getSender();
+        CustomerDTO recipient = transferDTO.getRecipient();
+
+        if (sender.getId().equals(recipient.getId())) {
+            errors.rejectValue("customer", "customer.same", "Sender and recipient must be identical");
         }
     }
 }

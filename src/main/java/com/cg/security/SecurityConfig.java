@@ -93,15 +93,12 @@ public class SecurityConfig  {
                         "/register",
                         "/users/**")
                 .permitAll()
-                .antMatchers("/auth/**")
-                .permitAll()
                 .antMatchers("/api/**")
                 .hasAnyAuthority("ROLE_ADMIN")
+                .antMatchers("/index")
+                .hasAnyAuthority("ROLE_ADMIN","ROLE_USER")
                 .anyRequest()
                 .authenticated()
-                .and()
-                .exceptionHandling()
-                .accessDeniedHandler(customAccessDeniedHandler())
                 .and()
                 .formLogin()
                 .loginPage("/login")
@@ -120,6 +117,8 @@ public class SecurityConfig  {
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .accessDeniedHandler(customAccessDeniedHandler())
         ;
 
         return http.build();
